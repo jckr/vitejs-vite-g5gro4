@@ -15,11 +15,12 @@ function App() {
         <DimensionsObserver>
           {({ width, height }) => (
             <Dice
+              minIs0={true}
               minStep={50}
               width={width}
               height={height}
               running={running}
-              maxValue={6}
+              maxValue={10}
               onResult={() => setRunning(!running)}
             />
           )}

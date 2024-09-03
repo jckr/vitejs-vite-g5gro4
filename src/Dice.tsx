@@ -4,6 +4,7 @@ const DIE_HEIGHT = 40;
 const DIE_WIDTH = 40;
 
 type DieProps = {
+  minIs0: boolean,
   running: boolean;
   onResult: (result: number) => void;
   maxValue: number;
@@ -14,6 +15,7 @@ type DieProps = {
 type DiceProps = DieProps & {
   width: number;
   height: number;
+  minIs0?: boolean;
   random?: () => number;
   minStep?: number;
 };
@@ -26,6 +28,7 @@ export const Dice = (props: DiceProps) => {
       {new Array(nbDice).fill(0).map((_, index) => (
         <Die
           key={`die-${index}`}
+          minIs0={props.minIs0 ?? false}
           running={props.running}
           onResult={props.onResult}
           maxValue={props.maxValue}
@@ -38,7 +41,7 @@ export const Dice = (props: DiceProps) => {
 };
 
 export const Die = (props: DieProps) => {
-  const { onResult, minStep, running, random, maxValue } = props;
+  const { onResult, minIs0, minStep, running, random, maxValue } = props;
   const requestRef = useRef<number | null>(null);
   const timeRef = useRef<number | null>(null);
   const lastUpdatedRef = useRef<number | null>(0);
@@ -48,7 +51,9 @@ export const Die = (props: DieProps) => {
       lastUpdatedRef === null ||
       time - (lastUpdatedRef.current ?? 0) > minStep
     ) {
-      setValue(Math.ceil(random() * maxValue));
+      const rawValue = random() * maxValue;
+      const ajustedValue = minIs0 ? Math.floor(rawValue) : Math.ceil(value); 
+      setValue(ajustedValue);
       lastUpdatedRef.current = time;
     }
   };
