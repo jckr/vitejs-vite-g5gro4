@@ -21,20 +21,25 @@ type DiceProps = DieProps & {
 };
 
 export const Dice = (props: DiceProps) => {
-  const nbDice =
-    Math.ceil(props.height / DIE_HEIGHT) * Math.ceil(props.width / DIE_WIDTH);
+  const nbRows = Math.floor(props.height / DIE_HEIGHT);
+  const nbCols = Math.floor(props.width / DIE_WIDTH);
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-      {new Array(nbDice).fill(0).map((_, index) => (
+      {new Array(nbRows).fill(0).map((_, r) => (
+        <div style={{display: 'flex', flexDirection: 'column'}}
+        key={`row_${r}`}>
+
+        {new Array(nbCols).fill(0).map((_, c) => (
         <Die
-          key={`die-${index}`}
+          key={`die-${r}-${c}`}
           minIs0={props.minIs0 ?? false}
           running={props.running}
           onResult={props.onResult}
           maxValue={props.maxValue}
           minStep={props.minStep ?? 0}
           random={props.random ?? Math.random}
-        />
+        />))}
+        </div>
       ))}
     </div>
   );
@@ -85,7 +90,7 @@ export const Die = (props: DieProps) => {
     <div
       className={`die die-${value}`}
       style={{ width: DIE_WIDTH, height: DIE_HEIGHT }}
-      onClick={() => onResult(value)}
+      onMouseUp={() => onResult(value)}
     >
       {value}
     </div>
